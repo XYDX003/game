@@ -26,7 +26,6 @@ clock = pygame.time.Clock()
 # 计分系统 #
 COUNTER = pygame.USEREVENT + 1
 counter = pygame.event.Event(COUNTER)
-pygame.time.set_timer(COUNTER,1000)
 score = 0
 # 初始化
 f = pygame.font.Font('素材_字体/翩翩体.ttf', 30)
@@ -262,6 +261,8 @@ pygame.display.flip()
 # 第一次刷新屏幕
 
 pygame.time.wait(3000)
+
+pygame.time.set_timer(COUNTER,1000)
 
 while True:
 
