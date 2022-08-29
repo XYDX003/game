@@ -26,7 +26,7 @@ det_y = 300
 class Det(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.rotozoom(pygame.image.load('-_-.jpeg'),0,0.1)
+        self.image = pygame.transform.rotozoom(pygame.image.load('图片_素材/-_-.jpeg'),0,0.1)
         self.rect = self.image.get_rect()
         self.rect.center = (det_x,det_y)
 
