@@ -1,0 +1,402 @@
+# made by xyh
+# 2022.8.30
+
+import pygame
+import random
+
+pygame.init()
+
+white = (255,255,255)
+black = (0,0,0)
+red = (255,0,0)
+pink = (255,192,203)
+silvery = (192,192,192)
+cyan = (0,128,128) # 青色
+light_green = (0,128,0) # 浅绿色
+# 快捷颜色
+
+window = pygame.display.set_mode((800,500))
+pygame.display.set_caption('sans.')
+window.fill(black)
+# 设置窗口、标题和背景颜色
+
+clock = pygame.time.Clock()
+# 创建时钟对象（控制游戏的FPS）
+
+# 计分系统 #
+score = 0
+# 初始化
+f = pygame.font.Font('素材_字体/翩翩体.ttf', 30)
+# 加载分数相关的字体为f
+score_text = f.render("点数："+str(score),True,white)
+# 将文本渲染成图片存入“score_text”中
+window.blit(score_text,(0,0))
+# 在window上画出score_text
+
+# 载入图片'-_-.jpeg'，det即-_-
+det_x = 400
+det_y = 300
+class Det(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.transform.rotozoom(pygame.image.load('素材_图片/-_-.jpeg'),0,0.1)
+        self.rect = self.image.get_rect()
+        self.rect.center = (det_x,det_y)
+
+    def update():
+        # 每一次游戏循环都会触发一次这个更新方法
+
+        window.blit(det.image,(det_x,det_y))
+        # 在window上画出det
+
+        det.rect.center = (det_x+6,det_y+6)
+        # 将det的碰撞体积更新
+
+det = Det()
+# 实例化Det为det
+
+fri1_x = random.randint(50,750)
+fri1_y = random.randint(50,200)
+# 随机生成fri
+
+aim1 = False
+class Fri1(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((5,5))
+        self.image.fill(cyan)
+        self.rect = self.image.get_rect()
+        self.rect.center = (fri1_x,fri1_y)
+
+    def update():
+        # 每一次游戏循环都会触发一次这个更新方法
+
+        global aim1,fri1_x,fri1_y,m_x1,m_y1
+
+        if not aim1:
+
+            fri1_x = random.randint(50,750)
+            fri1_y = random.randint(50,200)
+            # 随机生成fri1
+
+            m_x1 = (det_x-fri1_x)/150 # 此处可调fri1的x轴速度
+            m_y1 = (det_y-fri1_y)/150 # 此处可调fri1的y轴速度
+            aim1 = True
+            # 锁定目标
+
+        else:
+            fri1_x += m_x1
+            fri1_y += m_y1
+            # 自然选择，前进四！
+
+        window.blit(fri1.image,(fri1_x,fri1_y))
+        # 在window上画出fri1
+
+        fri1.rect.center = (fri1_x,fri1_y)
+        # 将fri1的碰撞体积更新
+        
+fri1 = Fri1()
+# 实例化Fri1为fri1
+
+fri_x = random.randint(50,750)
+fri_y = random.randint(50,200)
+# 随机生成fri
+
+aim = False
+class Fri(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((5,5))
+        self.image.fill(white)
+        self.rect = self.image.get_rect()
+        self.rect.center = (fri_x,fri_y)
+
+    def update():
+        # 每一次游戏循环都会触发一次这个更新方法
+
+        global aim,fri_x,fri_y,m_x,m_y
+
+        if not aim:
+
+            fri_x = random.randint(50,750)
+            fri_y = random.randint(50,200)
+            # 随机生成fri
+
+            m_x = (det_x-fri_x)/150 # 此处可调fri的x轴速度
+            m_y = (det_y-fri_y)/150 # 此处可调fri的y轴速度
+            aim = True
+            # 锁定目标
+
+        else:
+            fri_x += m_x
+            fri_y += m_y
+            # 自然选择，前进四！
+
+        window.blit(fri.image,(fri_x,fri_y))
+        # 在window上画出fri
+
+        fri.rect.center = (fri_x,fri_y)
+        # 将fri的碰撞体积更新
+        
+fri = Fri()
+# 实例化Fri为fri
+
+kill = True
+# 使用开关kill判断Fri_L是否飞出屏幕
+
+fri_sin_x = random.randint(0,3)*20
+fri_sin_y = random.randint(250,350)
+
+class Fri_sin(pygame.sprite.Sprite):
+    # 创建精灵Fri_sin，即伪正弦波的“友谊颗粒”
+
+    def __init__(self):
+        self.image = pygame.Surface((5,5))
+        self.image.fill(light_green)
+        self.rect = self.image.get_rect()
+        self.rect.center = (fri_sin_x,fri_sin_y)
+
+    def update():
+
+        global kill,direction,fri_sin_x,fri_sin_y
+
+        if kill:
+
+            fri_sin_x = random.randint(0,3)*20
+            fri_sin_y = random.randint(250,350)
+            direction = 'Down'
+            kill = False
+
+        else:
+
+            fri_sin_x += 0.5
+
+            if direction == 'Down':
+                fri_sin_y += 2
+                # 下摆逻辑
+            elif direction == 'Up':
+                fri_sin_y -= 2
+                # 上摆逻辑
+
+            if fri_sin_y >= 370:
+                direction = 'Up'
+                # 最下换向
+
+            elif fri_sin_y <= 230:
+                direction = 'Down'
+                # 最上换向
+
+        window.blit(fri_sin.image,(fri_sin_x,fri_sin_y))
+        # 在window上画出fri_sin
+
+        fri_sin.rect.center = (fri_sin_x,fri_sin_y)
+        # 将fri_sin的碰撞体积更新
+
+fri_sin = Fri_sin()
+
+kill1 = True
+# 使用开关kill判断Fri_L是否飞出屏幕
+
+fri_sin1_x = random.randint(0,3)*20
+fri_sin1_y = random.randint(250,350)
+
+class Fri_sin1(pygame.sprite.Sprite):
+    # 创建精灵Fri_sin1，即伪正弦波的“友谊颗粒”
+
+    def __init__(self):
+        self.image = pygame.Surface((5,5))
+        self.image.fill(pink)
+        self.rect = self.image.get_rect()
+        self.rect.center = (fri_sin1_x,fri_sin1_y)
+
+    def update():
+
+        global kill1,direction1,fri_sin1_x,fri_sin1_y
+
+        if kill1:
+
+            fri_sin1_x = 800-(random.randint(0,3)*20)
+            fri_sin1_y = random.randint(250,350)
+            direction1 = 'Down'
+            kill1 = False
+
+        else:
+
+            fri_sin1_x -= 1
+
+            if direction1 == 'Down':
+                fri_sin1_y += 2
+                # 下摆逻辑
+            elif direction1 == 'Up':
+                fri_sin1_y -= 2
+                # 上摆逻辑
+
+            if fri_sin1_y >= 370:
+                direction1 = 'Up'
+                # 最下换向
+
+            elif fri_sin1_y <= 230:
+                direction1 = 'Down'
+                # 最上换向
+
+        window.blit(fri_sin1.image,(fri_sin1_x,fri_sin1_y))
+        # 在window上画出fri_sin1
+
+        fri_sin1.rect.center = (fri_sin1_x,fri_sin1_y)
+        # 将fri_sin1的碰撞体积更新
+
+fri_sin1 = Fri_sin1()
+
+Det.update()
+
+pygame.draw.rect(window,white,(343,243,120,5)) # 上边框
+pygame.draw.rect(window,white,(343,363,120,5)) # 下边框
+pygame.draw.rect(window,white,(343,243,5,122)) # 左边框
+pygame.draw.rect(window,white,(463,243,5,125)) # 右边框
+# 画出det的活动区域
+
+start_CG = ['操作说明','使用键盘WASD或方向键控制角色移动','接收飞向你的友谊颗粒','点数会随着存活时间的增加而增加']
+for i in range(len(start_CG)):
+    window.blit(f.render(start_CG[i],True,white),(200,30*i))
+
+pygame.display.flip()
+# 第一次刷新屏幕
+
+# 技能模块 #
+timer_L = 0 # 清屏技能CD重置
+skill_L_text = f.render('技能：清屏 已冷却完毕，按下L键释放',True,white)
+
+# 音乐模块
+m_death = pygame.mixer.music.load('素材_音乐/死神.mp3')
+# 此行将“死神.mp3”文件载入音乐流中
+
+pygame.mixer.music.play(-1,0.0)
+# 此行直接播放音乐流
+
+pygame.time.wait(3000)
+
+COUNTER = pygame.USEREVENT + 1
+counter = pygame.event.Event(COUNTER)
+pygame.time.set_timer(COUNTER,1000)
+
+while True:
+
+    window.fill(black)
+
+    clock.tick(360)
+    # 通过时钟对象，指定循环频率，每秒循环360次
+    # 此处可调整游戏的速度，从而调整游戏的难度
+
+    score_text = f.render("点数："+str(score),True,white)
+    # 将文本渲染成图片存入“score_text”中
+    window.blit(score_text,(0,0))
+    # 在window上画出score_text
+
+    Det.update()
+
+    pygame.draw.rect(window,white,(343,243,120,5)) # 上边框
+    pygame.draw.rect(window,white,(343,363,120,5)) # 下边框
+    pygame.draw.rect(window,white,(343,243,5,122)) # 左边框
+    pygame.draw.rect(window,white,(463,243,5,125)) # 右边框
+    # 画出det的活动区域
+
+    Fri.update()
+    Fri1.update()
+    Fri_sin.update()
+    Fri_sin1.update()
+
+    for event in pygame.event.get():
+        # 获取事件
+
+        if event.type == pygame.QUIT:
+            # 设置退出游戏方法
+            exit()
+
+        if event.type == COUNTER:
+            timer_L += 1
+            score += 1
+
+    # ------------------------------1.控制det移动
+    keys = pygame.key.get_pressed()
+
+    if det_y >= 250:
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
+            # 上方向
+            det_y -= 1
+
+    if det_y <= 350:
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+            # 下方向
+            det_y += 1
+
+    if det_x <= 450:
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            # 右方向
+            det_x += 1
+
+    if det_x >= 350:
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            # 左方向
+            det_x -= 1
+    # ------------------------------1.end
+
+    # ------------------------------2.技能的释放
+    if timer_L >= 5:
+
+        window.blit(skill_L_text,(0,30))
+
+        if keys[pygame.K_l]:
+
+            aim = False
+            aim1 = False
+            kill = True
+            kill1 = True
+            timer_L = 0
+    # ------------------------------2.end
+
+    if fri_x >= 800 or fri_x <= 0 or fri_y <= 0 or fri_y >= 500:
+        # 检测fri是否飞出屏幕
+        aim = False
+
+    if fri1_x >= 800 or fri1_x <= 0 or fri1_y <= 0 or fri1_y >= 500:
+        # 检测fri1是否飞出屏幕
+        aim1 = False
+
+    if fri_sin_x >= 800:
+        # 检测fri_sin是否飞出屏幕
+        kill = True
+
+    if fri_sin1_x <= 0:
+        # 检测fri_sin1是否飞出屏幕
+        kill1 =True
+
+    if pygame.sprite.collide_rect(det,fri):
+        # 检测det是否与fri碰撞
+        aim = False
+        pygame.time.wait(1500)
+        exit()
+        # 暂时先这么放着
+
+    if pygame.sprite.collide_rect(det,fri1):
+        # 检测det是否与fri1碰撞
+        aim1 = False
+        pygame.time.wait(1500)
+        exit()
+        # 暂时先这么放着
+
+    if pygame.sprite.collide_rect(det,fri_sin):
+        # 检测det是否与fri_sin碰撞
+        kill = True
+        pygame.time.wait(1500)
+        exit()
+        # 暂时先这么放着
+
+    if pygame.sprite.collide_rect(det,fri_sin1):
+        # 检测det是否与fri_sin1碰撞
+        kill1 = True
+        pygame.time.wait(1500)
+        exit()
+        # 暂时先这么放着
+
+    pygame.display.update()
+    # 刷新屏幕
